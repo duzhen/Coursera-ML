@@ -26,10 +26,23 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
 m = size(X, 1);
          
 % You need to return the following variables correctly 
+
+% Add ones to the X data matrix
+X = [ones(m, 1) X];
+
 J = 0;
 Theta1_grad = zeros(size(Theta1));
 Theta2_grad = zeros(size(Theta2));
 
+z2 = X * Theta1';
+a2 = sigmoid(z2);
+a2 = [ones(m,1) a2];
+z3 = a2 * Theta2';
+a3 = sigmoid(z3);
+
+yv = y==[1:num_labels];
+J = sum(sum(-yv.*log(a3)-(1-yv).*log(1-a3),2))/m;
+J = J + lambda * (sum(sum(Theta1(:,2:end).^2)) + sum(sum(Theta2(:,2:end).^2)))/(2*m);
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
 %               following parts.
@@ -62,12 +75,19 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+% see tutorial here https://www.coursera.org/learn/machine-learning/discussions/all/threads/a8Kce_WxEeS16yIACyoj1Q
+
+d3 = a3 - yv;
+d2 = d3 * Theta2(:,2:end) .* sigmoidGradient(z2);
+Delta1 = d2' * X;
+Delta2 = d3' * a2;
+
+Theta1_grad  = Delta1 / m;
+Theta2_grad  = Delta2 / m;
 
 
-
-
-
-
+Theta1_grad(:,2:end) = Theta1_grad(:,2:end) + Theta1(:,2:end) * lambda / m;
+Theta2_grad(:,2:end) = Theta2_grad(:,2:end) + Theta2(:,2:end) * lambda / m;
 
 
 
