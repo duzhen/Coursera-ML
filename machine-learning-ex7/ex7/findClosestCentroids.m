@@ -21,7 +21,17 @@ idx = zeros(size(X,1), 1);
 % Note: You can use a for-loop over the examples to compute this.
 %
 
-
+for i=1:size(X,1)
+    d = realmax;
+    for j = 1:K
+        dTmp = (X(i,:)-centroids(j,:))*(X(i,:)-centroids(j,:))';
+        if dTmp < d
+            d = dTmp;
+            idx(i) = j;
+        end;
+    end;
+end;
+    
 
 
 
