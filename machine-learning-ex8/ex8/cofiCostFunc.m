@@ -41,11 +41,21 @@ Theta_grad = zeros(size(Theta));
 %
 
 
+J = sum(sum((X * Theta'.*R-Y.*R).^2))/2 + (lambda/2) * sum(sum(Theta.^2)) + (lambda/2) * sum(sum(X.^2));
 
+for i = 1:size(X,1)
+    idx = find(R(i,:)==1);
+    ThetaTemp = Theta(idx,:);
+    YTemp = Y(i,idx);
+    X_grad(i,:) = (X(i,:)*ThetaTemp'-YTemp)*ThetaTemp+lambda*X(i,:);
+end;
 
-
-
-
+for j = 1:size(Theta,1)
+    idx = find(R(:,j)==1);
+    XTemp = X(idx,:);
+    YTemp = Y(idx,j);
+    Theta_grad(j,:) = (XTemp*Theta(j,:)'-YTemp)'*XTemp+lambda*Theta(j,:);
+end;
 
 
 
